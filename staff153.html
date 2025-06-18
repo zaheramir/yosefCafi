@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>הזמנות מהלקוחות</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .order {
+      background-color: white;
+      padding: 20px;
+      margin: 10px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .order ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .order ul li {
+      padding: 5px 0;
+    }
+
+    .delete-button {
+      background-color: #f44336;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .delete-button:hover {
+      background-color: #d32f2f;
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-direction: row-reverse;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>הזמנות נוכחיות</h1>
+  <div id="orders-container">
+    <p>טוען הזמנות...</p>
+  </div>
+
+  <script>
+    const ordersContainer = document.getElementById('orders-container');
+
+    async function fetchOrders() {
+      try {
+        const response = await fetch('https://cafe-production.up.railway.app/get-orders');
+        const orders = await response.json();
+
+        const validOrders = orders.filter(order => order !== null);
+        ordersContainer.innerHTML = '';
+
+        if (validOrders.length === 0) {
+          ordersContainer.innerHTML = '<p>אין הזמנות כרגע.</p>';
+        } else {
+          validOrders.forEach((order, index) => {
+            const orderDiv = document.createElement('div');
+            orderDiv.className = 'order';
+
+            const orderHeader = document.createElement('div');
+            orderHeader.className = 'order-header';
+            orderHeader.innerHTML = `<h2>שולחן ${order.table} - ${order.name} (${order.phone})</h2>`;
+            orderDiv.appendChild(orderHeader);
+
+            const orderList = document.createElement('ul');
+            order.items.forEach((item, itemIndex) => {
+              const listItem = document.createElement('li');
+              listItem.innerHTML = `
+                ${item.item} ${item.extras.length > 0 ? `עם ${item.extras.join(', ')}` : 'ללא תוספות'} - ₪${item.price}
+                <button class="delete-button" style="margin-right: 10px;" onclick="deleteItem(${index}, ${itemIndex})">מחק</button>
+              `;
+              orderList.appendChild(listItem);
+            });
+            orderDiv.appendChild(orderList);
+
+            const totalPrice = document.createElement('p');
+            totalPrice.innerHTML = `<strong>סה"כ:</strong> ₪${order.total}`;
+            orderDiv.appendChild(totalPrice);
+
+            const deleteOrderButton = document.createElement('button');
+            deleteOrderButton.textContent = 'מחק הזמנה';
+            deleteOrderButton.className = 'delete-button';
+            deleteOrderButton.addEventListener('click', () => deleteOrder(index));
+            orderDiv.appendChild(deleteOrderButton);
+
+            ordersContainer.appendChild(orderDiv);
+          });
+        }
+      } catch (error) {
+        console.error('שגיאה בטעינת ההזמנות:', error);
+        ordersContainer.innerHTML = '<p>טעינת ההזמנות נכשלה.</p>';
+      }
+    }
+
+    async function deleteOrder(index) {
+      try {
+        const response = await fetch(`https://cafe-production.up.railway.app/delete-order/${index}`, {
+          method: 'DELETE',
+        });
+
+        if (response.ok) {
+          alert('ההזמנה נמחקה בהצלחה!');
+          fetchOrders();
+        } else {
+          alert('נכשל במחיקת ההזמנה.');
+        }
+      } catch (error) {
+        console.error('שגיאה במחיקת ההזמנה:', error);
+      }
+    }
+
+    async function deleteItem(orderIndex, itemIndex) {
+      try {
+        const response = await fetch(`https://cafe-production.up.railway.app/delete-item/${orderIndex}/${itemIndex}`, {
+          method: 'PATCH',
+        });
+
+        if (response.ok) {
+          alert('הפריט נמחק בהצלחה!');
+          fetchOrders();
+        } else {
+          alert('נכשל במחיקת הפריט.');
+        }
+      } catch (error) {
+        console.error('שגיאה במחיקת פריט:', error);
+      }
+    }
+
+    fetchOrders();
+  </script>
+
+</body>
+</html>
