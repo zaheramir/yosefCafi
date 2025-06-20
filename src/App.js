@@ -28,8 +28,6 @@ function App() {
 
     setOrder([...order, { item: name, extras: [], price: unitPrice * quantity, quantity }]);
     setCheckmarkVisibleKey(qtyKey);
-
-    // Clear the input field
     setQuantities(prev => ({ ...prev, [qtyKey]: '' }));
 
     setTimeout(() => setCheckmarkVisibleKey(null), 1000);
@@ -39,6 +37,16 @@ function App() {
     const newOrder = [...order];
     newOrder.splice(index, 1);
     setOrder(newOrder);
+  };
+
+  const showOrderSummary = () => {
+    if (order.length === 0) return;
+
+    const summary = order.map((item, i) =>
+      `${i + 1}. ${item.item} (${item.quantity} יח') - ₪${item.price}`
+    ).join('\n');
+
+    alert(`הזמנה:\n${summary}\n\nסה"כ: ₪${order.reduce((sum, item) => sum + item.price, 0)}`);
   };
 
   return (
@@ -93,7 +101,7 @@ function App() {
       )}
 
       {order.length > 0 && (
-        <div className="floating-cart" onClick={() => alert("הזמנה:\n" + order.map(i => `${i.item} (${i.quantity})`).join("\n"))}>
+        <div className="floating-cart" onClick={showOrderSummary}>
           <span>הזמנה: {order.length} פריטים | ₪{order.reduce((sum, item) => sum + item.price, 0)}</span>
         </div>
       )}
