@@ -31,6 +31,14 @@
 
     .order ul li {
       padding: 5px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .cooked {
+      text-decoration: line-through;
+      color: green;
     }
 
     .delete-button {
@@ -52,6 +60,12 @@
       align-items: center;
       flex-direction: row-reverse;
     }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
   </style>
 </head>
 <body>
@@ -63,19 +77,20 @@
 
   <script>
     const ordersContainer = document.getElementById('orders-container');
+    let latestOrders = [];
 
     async function fetchOrders() {
       try {
         const response = await fetch('https://cafe-production.up.railway.app/get-orders');
         const orders = await response.json();
 
-        const validOrders = orders.filter(order => order !== null);
+        latestOrders = orders.filter(order => order !== null);
         ordersContainer.innerHTML = '';
 
-        if (validOrders.length === 0) {
+        if (latestOrders.length === 0) {
           ordersContainer.innerHTML = '<p>אין הזמנות כרגע.</p>';
         } else {
-          validOrders.forEach((order, index) => {
+          latestOrders.forEach((order, orderIndex) => {
             const orderDiv = document.createElement('div');
             orderDiv.className = 'order';
 
@@ -87,10 +102,34 @@
             const orderList = document.createElement('ul');
             order.items.forEach((item, itemIndex) => {
               const listItem = document.createElement('li');
-              listItem.innerHTML = `
-                ${item.item} ${item.extras.length > 0 ? `עם ${item.extras.join(', ')}` : 'ללא תוספות'} - ₪${item.price}
-                <button class="delete-button" style="margin-right: 10px;" onclick="deleteItem(${index}, ${itemIndex})">מחק</button>
-              `;
+              const itemText = `${item.item} ${item.extras.length > 0 ? `${item.extras.join(', ')}` : 'ללא תוספות'} - ₪${item.price}`;
+
+              const label = document.createElement('label');
+              label.className = 'checkbox-label';
+
+              const checkbox = document.createElement('input');
+              checkbox.type = 'checkbox';
+              checkbox.addEventListener('change', () => {
+                if (checkbox.checked) {
+                  label.classList.add('cooked');
+                } else {
+                  label.classList.remove('cooked');
+                }
+              });
+
+              const span = document.createElement('span');
+              span.textContent = itemText;
+
+              label.appendChild(checkbox);
+              label.appendChild(span);
+
+              const deleteButton = document.createElement('button');
+              deleteButton.textContent = 'מחק';
+              deleteButton.className = 'delete-button';
+              deleteButton.addEventListener('click', () => deleteItem(orderIndex, itemIndex));
+
+              listItem.appendChild(label);
+              listItem.appendChild(deleteButton);
               orderList.appendChild(listItem);
             });
             orderDiv.appendChild(orderList);
@@ -102,7 +141,7 @@
             const deleteOrderButton = document.createElement('button');
             deleteOrderButton.textContent = 'מחק הזמנה';
             deleteOrderButton.className = 'delete-button';
-            deleteOrderButton.addEventListener('click', () => deleteOrder(index));
+            deleteOrderButton.addEventListener('click', () => deleteOrder(orderIndex));
             orderDiv.appendChild(deleteOrderButton);
 
             ordersContainer.appendChild(orderDiv);
@@ -134,7 +173,7 @@
     async function deleteItem(orderIndex, itemIndex) {
       try {
         const response = await fetch(`https://cafe-production.up.railway.app/delete-item/${orderIndex}/${itemIndex}`, {
-          method: 'PATCH',
+          method: 'POST',
         });
 
         if (response.ok) {
