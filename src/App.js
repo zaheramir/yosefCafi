@@ -18,6 +18,7 @@ function App() {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [quantities, setQuantities] = useState({});
   const [checkmarkVisibleKey, setCheckmarkVisibleKey] = useState(null);
+  const [showOrder, setShowOrder] = useState(false);
 
   const addBaklava = (name, unitPrice, qtyKey) => {
     const quantity = parseInt(quantities[qtyKey] || '1');
@@ -39,15 +40,7 @@ function App() {
     setOrder(newOrder);
   };
 
-  const showOrderSummary = () => {
-    if (order.length === 0) return;
-
-    const summary = order.map((item, i) =>
-      `${i + 1}. ${item.item} (${item.quantity} יח') - ₪${item.price}`
-    ).join('\n');
-
-    alert(`הזמנה:\n${summary}\n\nסה"כ: ₪${order.reduce((sum, item) => sum + item.price, 0)}`);
-  };
+  const totalPrice = order.reduce((sum, item) => sum + item.price, 0);
 
   return (
     <div className="container">
@@ -101,9 +94,26 @@ function App() {
       )}
 
       {order.length > 0 && (
-        <div className="floating-cart" onClick={showOrderSummary}>
-          <span>הזמנה: {order.length} פריטים | ₪{order.reduce((sum, item) => sum + item.price, 0)}</span>
-        </div>
+        <>
+          <div className="floating-cart" onClick={() => setShowOrder(!showOrder)}>
+            <span>הזמנה: {order.length} פריטים | ₪{totalPrice}</span>
+          </div>
+
+          {showOrder && (
+            <div className="order-summary">
+              <h2>הזמנה</h2>
+              <ul>
+                {order.map((item, index) => (
+                  <li key={index}>
+                    {item.item} - ₪{item.price} ({item.quantity} יח')
+                    <button className="remove-button" onClick={() => removeItem(index)}>מחק</button>
+                  </li>
+                ))}
+              </ul>
+              <p><strong>סה"כ:</strong> ₪{totalPrice}</p>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
