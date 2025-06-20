@@ -239,3 +239,7 @@ input {
   content: "🛒";
   font-size: 18px;
 }
+
+body {
+  padding-bottom: 80px; /* makes sure fixed cart doesn't block content */
+}
