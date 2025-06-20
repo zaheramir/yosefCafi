@@ -17,6 +17,7 @@ function App() {
   const [order, setOrder] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [quantities, setQuantities] = useState({});
+  const [showCheckmark, setShowCheckmark] = useState(false);
 
   const addBaklava = (name, unitPrice, qtyKey) => {
     const quantity = parseInt(quantities[qtyKey] || '1');
@@ -25,6 +26,8 @@ function App() {
       return;
     }
     setOrder([...order, { item: name, extras: [], price: unitPrice * quantity, quantity }]);
+    setShowCheckmark(true);
+    setTimeout(() => setShowCheckmark(false), 1000);
   };
 
   const removeItem = (index) => {
@@ -35,6 +38,8 @@ function App() {
 
   return (
     <div className="container">
+      {showCheckmark && <div className="checkmark-popup center">✓ נוסף!</div>}
+
       <h1>תפריט</h1>
 
       {!selectedCategory && (
