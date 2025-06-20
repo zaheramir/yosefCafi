@@ -25,8 +25,13 @@ function App() {
       alert('כמות לא תקינה');
       return;
     }
+
     setOrder([...order, { item: name, extras: [], price: unitPrice * quantity, quantity }]);
     setCheckmarkVisibleKey(qtyKey);
+
+    // Clear the input field
+    setQuantities(prev => ({ ...prev, [qtyKey]: '' }));
+
     setTimeout(() => setCheckmarkVisibleKey(null), 1000);
   };
 
@@ -87,18 +92,11 @@ function App() {
         </>
       )}
 
-      <div className="order-section">
-        <h2>הזמנה</h2>
-        <ul>
-          {order.map((item, index) => (
-            <li key={index}>
-              {item.item} - ₪{item.price} ({item.quantity} יח')
-              <button className="remove-button" onClick={() => removeItem(index)}>מחק</button>
-            </li>
-          ))}
-        </ul>
-        <p><strong>סה"כ:</strong> ₪{order.reduce((sum, item) => sum + item.price, 0)}</p>
-      </div>
+      {order.length > 0 && (
+        <div className="floating-cart" onClick={() => alert("הזמנה:\n" + order.map(i => `${i.item} (${i.quantity})`).join("\n"))}>
+          <span>הזמנה: {order.length} פריטים | ₪{order.reduce((sum, item) => sum + item.price, 0)}</span>
+        </div>
+      )}
     </div>
   );
 }
