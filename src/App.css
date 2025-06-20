@@ -228,12 +228,13 @@ input {
   border-radius: 50px;
   box-shadow: 0 4px 6px rgba(0,0,0,0.2);
   font-size: 14px;
-  z-index: 1000;
+  z-index: 9999;  /* Make sure it's on top */
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 8px;
 }
+
 
 .floating-cart::before {
   content: "🛒";
