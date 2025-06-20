@@ -218,22 +218,25 @@ input {
   80% { opacity: 1; }
   100% { opacity: 0; }
 }
-
 .floating-cart {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background: #4caf50;
+  background-color: #4caf50;
   color: white;
-  padding: 12px 20px;
-  border-radius: 30px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
-  font-weight: bold;
+  padding: 10px 16px;
+  border-radius: 50px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  font-size: 14px;
   z-index: 1000;
-  transition: transform 0.2s ease;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.floating-cart:hover {
-  transform: scale(1.05);
+.floating-cart::before {
+  content: "🛒";
+  font-size: 18px;
 }
+
