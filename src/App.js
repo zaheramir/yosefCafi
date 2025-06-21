@@ -1,3 +1,4 @@
+// Merged App.js with baklava section integrated + 5% Instagram discount
 import React, { useState } from 'react';
 import './App.css';
 
@@ -13,12 +14,31 @@ import baklava8 from './baklava8.jpg';
 import baklava9 from './baklava9.jpg';
 import baklava10 from './baklava10.jpg';
 
+import dessertsImg from './desserts.jpg';
+import hotImg from './hot.jpg';
+import coldImg from './cold.jpg';
+
 function App() {
   const [order, setOrder] = useState([]);
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [tableNumber, setTableNumber] = useState('');
+  const [showExtraPopup, setShowExtraPopup] = useState(null);
+  const [selectedExtras, setSelectedExtras] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [quantities, setQuantities] = useState({});
   const [checkmarkVisibleKey, setCheckmarkVisibleKey] = useState(null);
-  const [showOrder, setShowOrder] = useState(false);
+  const [followsInstagram, setFollowsInstagram] = useState(false);
+
+  const addItem = (itemName, basePrice, extraOptions = [], extraPriceMap = {}, requiredSingle = false) => {
+    if (extraOptions.length === 0) {
+      const newItem = { item: itemName, extras: [], price: basePrice };
+      setOrder([...order, newItem]);
+    } else {
+      setShowExtraPopup({ itemName, basePrice, extraOptions, extraPriceMap, requiredSingle });
+      setSelectedExtras([]);
+    }
+  };
 
   const addBaklava = (name, unitPrice, qtyKey) => {
     const quantity = parseInt(quantities[qtyKey] || '1');
@@ -26,12 +46,34 @@ function App() {
       alert('כמות לא תקינה');
       return;
     }
-
     setOrder([...order, { item: name, extras: [], price: unitPrice * quantity, quantity }]);
     setCheckmarkVisibleKey(qtyKey);
-    setQuantities(prev => ({ ...prev, [qtyKey]: '' }));
-
     setTimeout(() => setCheckmarkVisibleKey(null), 1000);
+    setQuantities(prev => ({ ...prev, [qtyKey]: '' }));
+  };
+
+  const confirmExtras = () => {
+    if (showExtraPopup.requiredSingle && selectedExtras.length !== 1) {
+      alert("יש לבחור בדיוק אפשרות אחת");
+      return;
+    }
+    const extraPrice = selectedExtras.reduce((sum, extra) => sum + (showExtraPopup.extraPriceMap[extra] || 0), 0);
+    const newItem = {
+      item: showExtraPopup.itemName,
+      extras: selectedExtras,
+      price: showExtraPopup.basePrice + extraPrice
+    };
+    setOrder([...order, newItem]);
+    setShowExtraPopup(null);
+    setSelectedExtras([]);
+  };
+
+  const toggleExtra = (extra) => {
+    if (showExtraPopup.requiredSingle) {
+      setSelectedExtras([extra]);
+    } else {
+      setSelectedExtras(selectedExtras.includes(extra) ? selectedExtras.filter(e => e !== extra) : [...selectedExtras, extra]);
+    }
   };
 
   const removeItem = (index) => {
@@ -40,7 +82,34 @@ function App() {
     setOrder(newOrder);
   };
 
-  const totalPrice = order.reduce((sum, item) => sum + item.price, 0);
+  const handleSubmit = async () => {
+    if (!name || !phone || !tableNumber || order.length === 0) {
+      alert("אנא מלא שם, טלפון, מספר שולחן והוסף לפחות פריט אחד.");
+      return;
+    }
+    const rawTotal = order.reduce((sum, item) => sum + item.price, 0);
+    const total = (followsInstagram ? rawTotal * 0.95 : rawTotal).toFixed(2);
+    const orderData = { name, phone, table: tableNumber, items: order, total };
+    try {
+      const response = await fetch('https://cafe-production.up.railway.app/submit-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData)
+      });
+      if (response.ok) {
+        alert("ההזמנה נשלחה בהצלחה!");
+        setOrder([]);
+        setName('');
+        setPhone('');
+        setTableNumber('');
+        setFollowsInstagram(false);
+      } else {
+        alert("אירעה שגיאה בשליחת ההזמנה.");
+      }
+    } catch (error) {
+      console.error("שגיאה בשליחה:", error);
+    }
+  };
 
   return (
     <div className="container">
@@ -48,6 +117,18 @@ function App() {
 
       {!selectedCategory && (
         <div className="category-grid">
+          <div className="category-box" onClick={() => setSelectedCategory('desserts')}>
+            <h3 className="category-title">קינוחים</h3>
+            <img src={dessertsImg} alt="קינוחים" />
+          </div>
+          <div className="category-box" onClick={() => setSelectedCategory('hot')}>
+            <h3 className="category-title">שתיה חמה</h3>
+            <img src={hotImg} alt="שתיה חמה" />
+          </div>
+          <div className="category-box" onClick={() => setSelectedCategory('cold')}>
+            <h3 className="category-title">שתיה קרה</h3>
+            <img src={coldImg} alt="שתיה קרה" />
+          </div>
           <div className="category-box" onClick={() => setSelectedCategory('baklava')}>
             <h3 className="category-title">בקלאווה</h3>
             <img src={baklava} alt="בקלאווה" />
@@ -59,8 +140,7 @@ function App() {
         <>
           <button className="back-button" onClick={() => setSelectedCategory(null)}>חזור</button>
           <div className="menu">
-            {[
-              { img: baklava1, name: 'קולאג\' אגוזי המלך', price: 4, key: 'q1' },
+            {[{ img: baklava1, name: 'קולאג\' אגוזי המלך', price: 4, key: 'q1' },
               { img: baklava2, name: 'בקלאווה פיסטוק טורקי', price: 6, key: 'q2' },
               { img: baklava3, name: 'בקלאווה פיסטוק', price: 5, key: 'q3' },
               { img: baklava4, name: 'בקלאווה משולש פיסטוק', price: 5, key: 'q4' },
@@ -93,28 +173,40 @@ function App() {
         </>
       )}
 
-      {order.length > 0 && (
-        <>
-          <div className="floating-cart" onClick={() => setShowOrder(!showOrder)}>
-            <span>הזמנה: {order.length} פריטים | ₪{totalPrice}</span>
+      <div className="order-section">
+        <h2>הזמנה נוכחית</h2>
+        <div className="order-summary">
+          <ul>
+            {order.map((item, index) => (
+              <li key={index}>
+                {item.item} {item.extras?.length > 0 ? `עם ${item.extras.join(', ')}` : ''} - ₪{item.price}
+                <button className="remove-button" onClick={() => removeItem(index)}>מחק</button>
+              </li>
+            ))}
+          </ul>
+          <p>
+            <strong>סה"כ:</strong> ₪
+            {followsInstagram
+              ? (order.reduce((sum, item) => sum + item.price, 0) * 0.95).toFixed(2)
+              : order.reduce((sum, item) => sum + item.price, 0).toFixed(2)}
+            {followsInstagram && <span style={{ color: 'green' }}> (5% הנחה)</span>}
+          </p>
+          <div style={{ margin: '10px 0' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <input
+                type="checkbox"
+                checked={followsInstagram}
+                onChange={() => setFollowsInstagram(!followsInstagram)}
+              />
+              עקבתי אחרי <a href="https://www.instagram.com/your_instagram_username" target="_blank" rel="noopener noreferrer">העמוד שלנו באינסטגרם</a> ומגיע לי 5% הנחה 🎉
+            </label>
           </div>
-
-          {showOrder && (
-            <div className="order-summary">
-              <h2>הזמנה</h2>
-              <ul>
-                {order.map((item, index) => (
-                  <li key={index}>
-                    {item.item} - ₪{item.price} ({item.quantity} יח')
-                    <button className="remove-button" onClick={() => removeItem(index)}>מחק</button>
-                  </li>
-                ))}
-              </ul>
-              <p><strong>סה"כ:</strong> ₪{totalPrice}</p>
-            </div>
-          )}
-        </>
-      )}
+          <input type="text" placeholder="שם" value={name} onChange={e => setName(e.target.value)} />
+          <input type="text" placeholder="טלפון" value={phone} onChange={e => setPhone(e.target.value)} />
+          <input type="text" placeholder="מספר שולחן או כתובת משלוח" value={tableNumber} onChange={e => setTableNumber(e.target.value)} />
+          <button className="submit-button" onClick={handleSubmit}>שלח הזמנה</button>
+        </div>
+      </div>
     </div>
   );
 }

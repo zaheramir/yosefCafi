@@ -218,29 +218,4 @@ input {
   80% { opacity: 1; }
   100% { opacity: 0; }
 }
-.floating-cart {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background-color: #4caf50;
-  color: white;
-  padding: 10px 16px;
-  border-radius: 50px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-  font-size: 14px;
-  z-index: 9999;  /* Make sure it's on top */
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
 
-
-.floating-cart::before {
-  content: "🛒";
-  font-size: 18px;
-}
-
-body {
-  padding-bottom: 80px; /* makes sure fixed cart doesn't block content */
-}
