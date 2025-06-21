@@ -155,13 +155,13 @@ function App() {
             {followsInstagram && <span style={{ color: 'green' }}> (5% הנחה)</span>}
           </p>
           <div style={{ margin: '10px 0' }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
               <input
                 type="checkbox"
                 checked={followsInstagram}
                 onChange={() => setFollowsInstagram(!followsInstagram)}
               />
-              עקבתי אחרי <a href="https://www.instagram.com/your_instagram_username" target="_blank" rel="noopener noreferrer">העמוד שלנו באינסטגרם</a> ומגיע לי 5% הנחה 🎉
+              עקבתי אחרי <a href="https://www.instagram.com/yosef.sweets_conditory?utm_source=ig_web_button_share_sheet&igsh=MWQ2ODFnZzMxc3I1Zw==" target="_blank" rel="noopener noreferrer">העמוד שלנו באינסטגרם</a> ומגיע לי 5% הנחה 🎉
             </label>
           </div>
           <input type="text" placeholder="שם" value={name} onChange={e => setName(e.target.value)} />
