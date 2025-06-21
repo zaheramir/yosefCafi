@@ -154,8 +154,9 @@ function App() {
               : order.reduce((sum, item) => sum + item.price, 0).toFixed(2)}
             {followsInstagram && <span style={{ color: 'green' }}> (5% הנחה)</span>}
           </p>
-          <div style={{ margin: '10px 0', direction: 'ltr', textAlign: 'left' }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+
+          <div style={{ margin: '10px 0', display: 'flex', justifyContent: 'flex-end' }}>
+            <label style={{ display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', gap: '8px' }}>
               <input
                 type="checkbox"
                 checked={followsInstagram}
@@ -164,6 +165,9 @@ function App() {
               עקבתי אחרי <a href="https://www.instagram.com/yosef.sweets_conditory?utm_source=ig_web_button_share_sheet&igsh=MWQ2ODFnZzMxc3I1Zw==" target="_blank" rel="noopener noreferrer">העמוד שלנו באינסטגרם</a> ומגיע לי 5% הנחה 🎉
             </label>
           </div>
+
+
+          
           <input type="text" placeholder="שם" value={name} onChange={e => setName(e.target.value)} />
           <input type="text" placeholder="טלפון" value={phone} onChange={e => setPhone(e.target.value)} />
           <input type="text" placeholder="מספר שולחן או כתובת משלוח" value={tableNumber} onChange={e => setTableNumber(e.target.value)} />
