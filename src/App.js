@@ -16,6 +16,7 @@ import baklava10 from './baklava10.jpg';
 import dessertsImg from './desserts.jpg';
 import hotImg from './hot.jpg';
 import coldImg from './cold.jpg';
+import instaIcon from './instagram.png';
 
 function App() {
   const [order, setOrder] = useState([]);
@@ -156,30 +157,29 @@ function App() {
           </p>
 
           <div style={{ margin: '10px 0', display: 'flex', justifyContent: 'flex-end' }}>
-          <label style={{
-            display: 'flex',
-            alignItems: 'flex-start',
-            flexDirection: 'row-reverse',
-            textAlign: 'right',
-            gap: '8px',
-            flexWrap: 'wrap',
-            maxWidth: '100%'
-          }}>
-            <input
-              type="checkbox"
-              checked={followsInstagram}
-              onChange={() => setFollowsInstagram(!followsInstagram)}
-              style={{ marginTop: '4px' }}
-            />
-            <span>
-              עקבתי אחרי <a href="https://www.instagram.com/yosef.sweets_conditory?utm_source=ig_web_button_share_sheet&igsh=MWQ2ODFnZzMxc3I1Zw==" target="_blank" rel="noopener noreferrer">העמוד שלנו באינסטגרם</a> ומגיע לי 5% הנחה 🎉
-            </span>
-          </label>
-        </div>
+            <label style={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              flexDirection: 'row-reverse',
+              textAlign: 'right',
+              gap: '8px',
+              flexWrap: 'wrap',
+              maxWidth: '100%'
+            }}>
+              <input
+                type="checkbox"
+                checked={followsInstagram}
+                onChange={() => setFollowsInstagram(!followsInstagram)}
+                style={{ marginTop: '4px' }}
+              />
+              <span>
+                עקבתי אחרי <a href="https://www.instagram.com/yosef.sweets_conditory?utm_source=ig_web_button_share_sheet&igsh=MWQ2ODFnZzMxc3I1Zw==" target="_blank" rel="noopener noreferrer">
+                  <img src={instaIcon} alt="Instagram" style={{ width: '22px', height: '22px', verticalAlign: 'middle' }} />
+                </a> ומגיע לי 5% הנחה 🎉
+              </span>
+            </label>
+          </div>
 
-
-
-          
           <input type="text" placeholder="שם" value={name} onChange={e => setName(e.target.value)} />
           <input type="text" placeholder="טלפון" value={phone} onChange={e => setPhone(e.target.value)} />
           <input type="text" placeholder="מספר שולחן או כתובת משלוח" value={tableNumber} onChange={e => setTableNumber(e.target.value)} />
