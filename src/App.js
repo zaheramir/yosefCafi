@@ -154,8 +154,8 @@ function App() {
               : order.reduce((sum, item) => sum + item.price, 0).toFixed(2)}
             {followsInstagram && <span style={{ color: 'green' }}> (5% הנחה)</span>}
           </p>
-          <div style={{ margin: '10px 0' }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+          <div style={{ margin: '10px 0', direction: 'ltr', textAlign: 'left' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <input
                 type="checkbox"
                 checked={followsInstagram}
