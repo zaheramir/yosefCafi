@@ -1,4 +1,3 @@
-// Merged App.js with baklava section integrated + 5% Instagram discount
 import React, { useState } from 'react';
 import './App.css';
 
@@ -23,14 +22,10 @@ function App() {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [tableNumber, setTableNumber] = useState('');
-  const [showExtraPopup, setShowExtraPopup] = useState(null);
-  const [selectedExtras, setSelectedExtras] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [quantities, setQuantities] = useState({});
   const [checkmarkVisibleKey, setCheckmarkVisibleKey] = useState(null);
   const [followsInstagram, setFollowsInstagram] = useState(false);
-
- 
 
   const addBaklava = (name, unitPrice, qtyKey) => {
     const quantity = parseInt(quantities[qtyKey] || '1');
@@ -43,9 +38,6 @@ function App() {
     setTimeout(() => setCheckmarkVisibleKey(null), 1000);
     setQuantities(prev => ({ ...prev, [qtyKey]: '' }));
   };
-
-  
-  
 
   const removeItem = (index) => {
     const newOrder = [...order];
@@ -150,7 +142,7 @@ function App() {
           <ul>
             {order.map((item, index) => (
               <li key={index}>
-                {item.item} {item.extras?.length > 0 ? `עם ${item.extras.join(', ')}` : ''} - ₪{item.price}
+                {item.item} - ₪{item.price}
                 <button className="remove-button" onClick={() => removeItem(index)}>מחק</button>
               </li>
             ))}
