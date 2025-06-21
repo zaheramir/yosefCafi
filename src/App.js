@@ -16,7 +16,7 @@ import baklava10 from './baklava10.jpg';
 import dessertsImg from './desserts.jpg';
 import hotImg from './hot.jpg';
 import coldImg from './cold.jpg';
-import instaIcon from './instagram.jpg';
+import instaIcon from './instagram.png';
 
 function App() {
   const [order, setOrder] = useState([]);
