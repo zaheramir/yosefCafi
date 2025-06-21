@@ -156,15 +156,27 @@ function App() {
           </p>
 
           <div style={{ margin: '10px 0', display: 'flex', justifyContent: 'flex-end' }}>
-            <label style={{ display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', gap: '8px' }}>
-              <input
-                type="checkbox"
-                checked={followsInstagram}
-                onChange={() => setFollowsInstagram(!followsInstagram)}
-              />
+          <label style={{
+            display: 'flex',
+            alignItems: 'flex-start',
+            flexDirection: 'row-reverse',
+            textAlign: 'right',
+            gap: '8px',
+            flexWrap: 'wrap',
+            maxWidth: '100%'
+          }}>
+            <input
+              type="checkbox"
+              checked={followsInstagram}
+              onChange={() => setFollowsInstagram(!followsInstagram)}
+              style={{ marginTop: '4px' }}
+            />
+            <span>
               עקבתי אחרי <a href="https://www.instagram.com/yosef.sweets_conditory?utm_source=ig_web_button_share_sheet&igsh=MWQ2ODFnZzMxc3I1Zw==" target="_blank" rel="noopener noreferrer">העמוד שלנו באינסטגרם</a> ומגיע לי 5% הנחה 🎉
-            </label>
-          </div>
+            </span>
+          </label>
+        </div>
+
 
 
           
