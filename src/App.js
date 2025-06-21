@@ -30,15 +30,7 @@ function App() {
   const [checkmarkVisibleKey, setCheckmarkVisibleKey] = useState(null);
   const [followsInstagram, setFollowsInstagram] = useState(false);
 
-  const addItem = (itemName, basePrice, extraOptions = [], extraPriceMap = {}, requiredSingle = false) => {
-    if (extraOptions.length === 0) {
-      const newItem = { item: itemName, extras: [], price: basePrice };
-      setOrder([...order, newItem]);
-    } else {
-      setShowExtraPopup({ itemName, basePrice, extraOptions, extraPriceMap, requiredSingle });
-      setSelectedExtras([]);
-    }
-  };
+ 
 
   const addBaklava = (name, unitPrice, qtyKey) => {
     const quantity = parseInt(quantities[qtyKey] || '1');
@@ -52,29 +44,8 @@ function App() {
     setQuantities(prev => ({ ...prev, [qtyKey]: '' }));
   };
 
-  const confirmExtras = () => {
-    if (showExtraPopup.requiredSingle && selectedExtras.length !== 1) {
-      alert("יש לבחור בדיוק אפשרות אחת");
-      return;
-    }
-    const extraPrice = selectedExtras.reduce((sum, extra) => sum + (showExtraPopup.extraPriceMap[extra] || 0), 0);
-    const newItem = {
-      item: showExtraPopup.itemName,
-      extras: selectedExtras,
-      price: showExtraPopup.basePrice + extraPrice
-    };
-    setOrder([...order, newItem]);
-    setShowExtraPopup(null);
-    setSelectedExtras([]);
-  };
-
-  const toggleExtra = (extra) => {
-    if (showExtraPopup.requiredSingle) {
-      setSelectedExtras([extra]);
-    } else {
-      setSelectedExtras(selectedExtras.includes(extra) ? selectedExtras.filter(e => e !== extra) : [...selectedExtras, extra]);
-    }
-  };
+  
+  
 
   const removeItem = (index) => {
     const newOrder = [...order];
