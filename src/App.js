@@ -186,7 +186,7 @@ function App() {
       {selectedCategory==='knafe' && (
         <>
           <button className="fancy-btn" onClick={()=>setSel(null)}>חזור</button>
-          {renderMenu(knafe)}
+          {renderMenu(knafes)}
         </>
       )}
 
