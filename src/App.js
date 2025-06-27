@@ -39,48 +39,62 @@ import knafe10    from './knafe10.jpg';
 import knafe11    from './knafe11.jpg';
 
 /* ------------ hot-drink images ---------- */
-import hotCat     from './hot.jpg';
-import hot1       from './hot1.jpg';
-import hot2       from './hot2.jpg';
-import hot3       from './hot3.jpg';
-import hot4       from './hot4.jpg';
-import hot5       from './hot5.jpg';
-import hot6       from './hot6.jpg';
-import hot7       from './hot7.jpg';
-import hot8       from './hot8.jpg';
-import hot9       from './hot9.jpg';
-import hot10      from './hot10.jpg';
-import hot11      from './hot11.jpg';
+import hotCat   from './hot.jpg';
+import hot1     from './hot1.jpg';
+import hot2     from './hot2.jpg';
+import hot3     from './hot3.jpg';
+import hot4     from './hot4.jpg';
+import hot5     from './hot5.jpg';
+import hot6     from './hot6.jpg';
+import hot7     from './hot7.jpg';
+import hot8     from './hot8.jpg';
+import hot9     from './hot9.jpg';
+import hot10    from './hot10.jpg';
+import hot11    from './hot11.jpg';
 
 /* ------------ cold-drink images --------- */
-import drinkCat   from './drink.jpg';
-import drink1     from './drink1.jpg';
-import drink2     from './drink2.jpg';
-import drink3     from './drink3.jpg';
-import drink4     from './drink4.jpg';
+import drinkCat from './drink.jpg';
+import drink1   from './drink1.jpg';
+import drink2   from './drink2.jpg';
+import drink3   from './drink3.jpg';
+import drink4   from './drink4.jpg';
+
+/* ------------ cold-dish images ---------- */
+import coldCat  from './cold.jpg';
+import cold1    from './cold1.jpg';
+import cold2    from './cold2.jpg';
+import cold3    from './cold3.jpg';
+import cold4    from './cold4.jpg';
+import cold5    from './cold5.jpg';
+import cold6    from './cold6.jpg';
+import cold7    from './cold7.jpg';
+import cold8    from './cold8.jpg';
+import cold9    from './cold9.jpg';
+import cold10   from './cold10.jpg';
+import cold11   from './cold11.jpg';
+import cold12   from './cold12.jpg';
 
 /* ------------ misc ------------ */
-import instaIcon  from './instagram.png';
+import instaIcon from './instagram.png';
 
 function App() {
-  /* ---------- menu state ---------- */
-  const [order,  setOrder]  = useState([]);
-  const [name,   setName]   = useState('');
-  const [phone,  setPhone]  = useState('');
-  const [table,  setTable]  = useState('');
+  /* ---------- state ---------- */
+  const [order, setOrder]        = useState([]);
+  const [name , setName]         = useState('');
+  const [phone, setPhone]        = useState('');
+  const [table, setTable]        = useState('');
   const [selectedCategory, setSel] = useState(null);
 
-  const [qty,    setQty]    = useState({});
-  const [check,  setCheck]  = useState(null);
-  const [follow, setFollow] = useState(false);
+  const [qty  , setQty]          = useState({});
+  const [check, setCheck]        = useState(null);
+  const [follow, setFollow]      = useState(false);
 
-  /* ---------- track state ---------- */
-  const [trackPhone,  setTrackPhone]  = useState('');
+  const [trackPhone , setTrackPhone]  = useState('');
   const [trackStatus, setTrackStatus] = useState(null);
-  const [trackErr,    setTrackErr]    = useState(null);
-  const [mode,        setMode]        = useState('menu'); // 'menu' | 'track'
+  const [trackErr   , setTrackErr]    = useState(null);
+  const [mode, setMode]               = useState('menu'); // 'menu' | 'track'
 
-  /* ---------- arrays of products ---------- */
+  /* ---------- data ---------- */
   const baklavas = [
     { img: baklava1 , name:'קולאג\' אגוזי המלך', price:4 , key:'b1' },
     { img: baklava2 , name:'בקלאווה פיסטוק טורקי', price:6 , key:'b2' },
@@ -141,10 +155,34 @@ function App() {
   ];
 
   const coldDrinks = [
-    { img:drink1, name:'שתיה קלה',      price:7 , key:'c1', portion:true },
-    { img:drink2, name:'מיץ תפוזים סחוט', price:15, key:'c2', portion:true },
-    { img:drink3, name:'תמר הנדי',       price:12, key:'c3', portion:true },
-    { img:drink4, name:'קפה קר',         price:15, key:'c4', portion:true },
+    { img:drink1, name:'שתיה קלה',         price:7 , key:'c1', portion:true },
+    { img:drink2, name:'מיץ תפוזים סחוט',  price:15, key:'c2', portion:true },
+    { img:drink3, name:'תמר הנדי',         price:12, key:'c3', portion:true },
+    { img:drink4, name:'קפה קר',           price:15, key:'c4', portion:true },
+  ];
+
+  const coldDishes = [
+    { img:cold1 , name:'טרליצ׳י – צלחת',    price:12, key:'cd1', portion:true,
+      desc:'טעמים: קרמל / פיסטוק / תות' },
+    { img:cold2 , name:'טרליצ׳י – אישית',    price:20, key:'cd2', portion:true,
+      desc:'טעמים: קרמל / פיסטוק / תות' },
+    { img:cold3 , name:'ליליות בירות',      price:20, key:'cd3', portion:true,
+      desc:'שכבת סולת בחלב, שמנת מתוקה ופיסטוק + סירופ מי ורדים' },
+    { img:cold4 , name:'עש אלסראיא',        price:25, key:'cd4', portion:true,
+      desc:'3 שכבות קדאיף, סחלב, שמנת מתוקה והאגוזים' },
+    { img:cold5 , name:'פחזניות (3 יחידות)', price:15, key:'cd5', portion:true },
+    { img:cold6 , name:'כנאפה קרה',         price:35, key:'cd6', portion:true,
+      desc:'שתי שכבות קדאיף במילוי גלידה טורקית ושוקולד' },
+    { img:cold7 , name:'עוגת טירמיסו',      price:25, key:'cd7', portion:true,
+      desc:'קרם חלבי אוורירי ובישקויטים ספוגי-קפה' },
+    { img:cold8 , name:'גלידה טורקית וניל', price:20, key:'cd8', portion:true,
+      desc:'ריבוע אישי' },
+    { img:cold9 , name:'קרם ברולה',         price:25, key:'cd9', portion:true },
+    { img:cold10, name:'סולטאג׳',           price:15, key:'cd10', portion:true,
+      desc:'מלבי בתוספת אורז' },
+    { img:cold11, name:'עוגת גבינה אפויה',  price:25, key:'cd11', portion:true },
+    { img:cold12, name:'גליליות קרם וניל',  price:10, key:'cd12', portion:true,
+      desc:'2 יחידות רול וופל ממולא שמנת' },
   ];
 
   /* ---------- helpers ---------- */
@@ -171,7 +209,7 @@ function App() {
             <input
               type="number" min="1" placeholder="כמות"
               value={qty[key] || ''}
-              onChange={e=>setQty({...qty, [key]:e.target.value})}
+              onChange={e=>setQty({...qty, [key]: e.target.value})}
             />
           )}
 
@@ -196,7 +234,8 @@ function App() {
 
     try{
       const res = await fetch('https://cafe-production.up.railway.app/submit-order',{
-        method:'POST', headers:{'Content-Type':'application/json'},
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
         body:JSON.stringify(payload)
       });
       if(res.ok){
@@ -236,7 +275,11 @@ function App() {
         </button>
 
         {trackStatus && (
-          <p style={{fontSize:'1.2rem',marginTop:'1rem',color:trackStatus==='completed' ? '#27ae60' : '#e67e22'}}>
+          <p style={{
+            fontSize:'1.2rem',
+            marginTop:'1rem',
+            color: trackStatus==='completed' ? '#27ae60' : '#e67e22'
+          }}>
             סטטוס: <b>{trackStatus==='completed' ? 'מוכן ✅' : 'בהכנה 🍰'}</b>
           </p>
         )}
@@ -271,6 +314,10 @@ function App() {
             <h3 className="category-title">כנאפה</h3>
             <img src={knafe} alt="כנאפה"/>
           </div>
+          <div className="category-box" onClick={()=>setSel('cold')}>
+            <h3 className="category-title">מנות קרות</h3>
+            <img src={coldCat} alt="מנות קרות"/>
+          </div>
           <div className="category-box" onClick={()=>setSel('hot')}>
             <h3 className="category-title">משקאות חמים</h3>
             <img src={hotCat} alt="חם"/>
@@ -284,6 +331,7 @@ function App() {
 
       {selectedCategory==='baklava'   && (<>{<button className="fancy-btn" onClick={()=>setSel(null)}>חזור</button>}{renderMenu(baklavas)}</>)}
       {selectedCategory==='knafe'     && (<>{<button className="fancy-btn" onClick={()=>setSel(null)}>חזור</button>}{renderMenu(knafes)}</>)}
+      {selectedCategory==='cold'      && (<>{<button className="fancy-btn" onClick={()=>setSel(null)}>חזור</button>}{renderMenu(coldDishes)}</>)}
       {selectedCategory==='hot'       && (<>{<button className="fancy-btn" onClick={()=>setSel(null)}>חזור</button>}{renderMenu(hotDrinks)}</>)}
       {selectedCategory==='coldDrink' && (<>{<button className="fancy-btn" onClick={()=>setSel(null)}>חזור</button>}{renderMenu(coldDrinks)}</>)}
 
@@ -306,7 +354,10 @@ function App() {
 
           <div style={{margin:'10px 0',display:'flex',justifyContent:'center'}}>
             <label style={{display:'flex',alignItems:'center',gap:'8px',fontSize:'1.05rem'}}>
-              <input type="checkbox" checked={follow} onChange={()=>setFollow(!follow)} style={{width:20,height:20}}/>
+              <input
+                type="checkbox" checked={follow}
+                onChange={()=>setFollow(!follow)} style={{width:20,height:20}}
+              />
               <span>
                 עקבתי אחרי&nbsp;
                 <a href="https://www.instagram.com/yosef.sweets_conditory" target="_blank" rel="noopener noreferrer">
@@ -317,8 +368,8 @@ function App() {
             </label>
           </div>
 
-          <input type="text" placeholder="שם"        value={name}  onChange={e=>setName(e.target.value)}/>
-          <input type="text" placeholder="טלפון"      value={phone} onChange={e=>setPhone(e.target.value)}/>
+          <input type="text" placeholder="שם" value={name} onChange={e=>setName(e.target.value)}/>
+          <input type="text" placeholder="טלפון" value={phone} onChange={e=>setPhone(e.target.value)}/>
           <input type="text" placeholder="מספר שולחן / כתובת" value={table} onChange={e=>setTable(e.target.value)}/>
           <button className="submit-button" onClick={handleSubmit}>שלח הזמנה</button>
         </div>
