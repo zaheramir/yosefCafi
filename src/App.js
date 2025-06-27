@@ -79,15 +79,16 @@ import instaIcon from './instagram.png';
 
 function App() {
   /* ---------- state ---------- */
-  const [order, setOrder]        = useState([]);
-  const [name , setName]         = useState('');
-  const [phone, setPhone]        = useState('');
-  const [table, setTable]        = useState('');
+  const [order, setOrder]          = useState([]);
+  const [name , setName]           = useState('');
+  const [phone, setPhone]          = useState('');
+  const [table, setTable]          = useState('');
   const [selectedCategory, setSel] = useState(null);
 
-  const [qty  , setQty]          = useState({});
-  const [check, setCheck]        = useState(null);
-  const [follow, setFollow]      = useState(false);
+  const [qty,   setQty]            = useState({});
+  const [flv,   setFlv]            = useState({});   // flavour selection
+  const [check, setCheck]          = useState(null);
+  const [follow,setFollow]         = useState(false);
 
   const [trackPhone , setTrackPhone]  = useState('');
   const [trackStatus, setTrackStatus] = useState(null);
@@ -162,10 +163,10 @@ function App() {
   ];
 
   const coldDishes = [
-    { img:cold1 , name:'טרליצ׳י – צלחת',    price:12, key:'cd1', portion:true,
-      desc:'טעמים: קרמל / פיסטוק / תות' },
-    { img:cold2 , name:'טרליצ׳י – אישית',    price:20, key:'cd2', portion:true,
-      desc:'טעמים: קרמל / פיסטוק / תות' },
+    { img:cold1 , name:'טרליצ׳י – צלחת', price:12, key:'cd1', portion:true,
+      desc:'טעמים: קרמל / פיסטוק / תות', flavours:['קרמל','פיסטוק','תות'] },
+    { img:cold2 , name:'טרליצ׳י – אישית', price:20, key:'cd2', portion:true,
+      desc:'טעמים: קרמל / פיסטוק / תות', flavours:['קרמל','פיסטוק','תות'] },
     { img:cold3 , name:'ליליות בירות',      price:20, key:'cd3', portion:true,
       desc:'שכבת סולת בחלב, שמנת מתוקה ופיסטוק + סירופ מי ורדים' },
     { img:cold4 , name:'עש אלסראיא',        price:25, key:'cd4', portion:true,
@@ -186,30 +187,51 @@ function App() {
   ];
 
   /* ---------- helpers ---------- */
-  const addItem = (name, price, key) => {
+  const addItem = (baseName, price, key) => {
     const q = parseInt(qty[key] || '1', 10);
     if (isNaN(q) || q < 1) { alert('כמות לא תקינה'); return; }
-    setOrder(prev => [...prev, { item:name, extras:[], price:price*q, quantity:q }]);
+
+    // flavour validation (when flavours exist)
+    const flavour = flv[key] || null;
+    const itemName = flavour ? `${baseName} — ${flavour}` : baseName;
+    if (coldDishes.find(d=>d.key===key && d.flavours) && !flavour) {
+      alert('בחר טעם קודם'); return;
+    }
+
+    setOrder(prev => [...prev, { item:itemName, extras:[], price:price*q, quantity:q }]);
     setCheck(key);
     setTimeout(()=>setCheck(null), 1000);
+
     setQty(prev => ({ ...prev, [key]:'' }));
+    setFlv(prev => ({ ...prev, [key]:'' }));
   };
 
   const removeItem = idx => setOrder(order.filter((_,i)=>i!==idx));
 
   const renderMenu = list => (
     <div className="menu">
-      {list.map(({ img,name,price,key,portion,desc }) => (
+      {list.map(({ img,name,price,key,portion,desc,flavours }) => (
         <div className="menu-item" key={key}>
           <img src={img} alt={name}/>
           <p>{name} - ₪{price}{portion ? '' : ' ליחידה'}</p>
           {desc && <span className="item-desc">{desc}</span>}
 
-          {!portion && (
+          {flavours && (
+            <select
+              value={flv[key] || ''}
+              onChange={e=>setFlv({...flv, [key]:e.target.value})}
+              style={{margin:'6px 0',width:'100%'}}
+            >
+              <option value="">בחר טעם</option>
+              {flavours.map(f=>(<option key={f} value={f}>{f}</option>))}
+            </select>
+          )}
+
+          {!portion && !flavours && (
             <input
               type="number" min="1" placeholder="כמות"
               value={qty[key] || ''}
-              onChange={e=>setQty({...qty, [key]: e.target.value})}
+              onChange={e=>setQty({...qty,[key]:e.target.value})}
             />
           )}
 
@@ -222,7 +244,7 @@ function App() {
     </div>
   );
 
-  /* ---------- submit order ---------- */
+  /* ---------- submit order / fetch status (זהים לגרסה הקודמת) ---------- */
   const handleSubmit = async () => {
     if (!name || !phone || !table || order.length === 0) {
       alert('אנא מלא שם, טלפון, מספר שולחן והוסף לפחות פריט אחד.');
@@ -248,7 +270,6 @@ function App() {
     }catch(e){ console.error(e); }
   };
 
-  /* ---------- track helpers ---------- */
   const fetchStatus = async ph => {
     if(!ph){ setTrackErr('יש להזין טלפון'); return; }
     try{
@@ -266,21 +287,16 @@ function App() {
       <div className="container">
         <h1>מעקב הזמנה</h1>
 
-        <input
-          type="text" placeholder="מס’ טלפון"
-          value={trackPhone} onChange={e=>setTrackPhone(e.target.value)}
-        />
-        <button className="submit-button" onClick={()=>fetchStatus(trackPhone)}>
-          בדוק
-        </button>
+        <input type="text" placeholder="מס’ טלפון"
+          value={trackPhone} onChange={e=>setTrackPhone(e.target.value)} />
+        <button className="submit-button" onClick={()=>fetchStatus(trackPhone)}>בדוק</button>
 
         {trackStatus && (
           <p style={{
-            fontSize:'1.2rem',
-            marginTop:'1rem',
-            color: trackStatus==='completed' ? '#27ae60' : '#e67e22'
-          }}>
-            סטטוס: <b>{trackStatus==='completed' ? 'מוכן ✅' : 'בהכנה 🍰'}</b>
+            fontSize:'1.2rem',marginTop:'1rem',
+            color:trackStatus==='completed'?'#27ae60':'#e67e22'}}
+          >
+            סטטוס: <b>{trackStatus==='completed'?'מוכן ✅':'בהכנה 🍰'}</b>
           </p>
         )}
         {trackErr && <p style={{color:'red'}}>{trackErr}</p>}
@@ -307,24 +323,19 @@ function App() {
       {!selectedCategory && (
         <div className="category-grid">
           <div className="category-box" onClick={()=>setSel('baklava')}>
-            <h3 className="category-title">בקלאווה</h3>
-            <img src={baklava} alt="בקלאווה"/>
+            <h3 className="category-title">בקלאווה</h3><img src={baklava} alt="בקלאווה"/>
           </div>
           <div className="category-box" onClick={()=>setSel('knafe')}>
-            <h3 className="category-title">כנאפה</h3>
-            <img src={knafe} alt="כנאפה"/>
+            <h3 className="category-title">כנאפה</h3><img src={knafe} alt="כנאפה"/>
           </div>
           <div className="category-box" onClick={()=>setSel('cold')}>
-            <h3 className="category-title">מנות קרות</h3>
-            <img src={coldCat} alt="מנות קרות"/>
+            <h3 className="category-title">מנות קרות</h3><img src={coldCat} alt="מנות קרות"/>
           </div>
           <div className="category-box" onClick={()=>setSel('hot')}>
-            <h3 className="category-title">משקאות חמים</h3>
-            <img src={hotCat} alt="חם"/>
+            <h3 className="category-title">משקאות חמים</h3><img src={hotCat} alt="חם"/>
           </div>
           <div className="category-box" onClick={()=>setSel('coldDrink')}>
-            <h3 className="category-title">משקאות קרים</h3>
-            <img src={drinkCat} alt="קר"/>
+            <h3 className="category-title">משקאות קרים</h3><img src={drinkCat} alt="קר"/>
           </div>
         </div>
       )}
@@ -354,22 +365,19 @@ function App() {
 
           <div style={{margin:'10px 0',display:'flex',justifyContent:'center'}}>
             <label style={{display:'flex',alignItems:'center',gap:'8px',fontSize:'1.05rem'}}>
-              <input
-                type="checkbox" checked={follow}
-                onChange={()=>setFollow(!follow)} style={{width:20,height:20}}
-              />
+              <input type="checkbox" checked={follow}
+                     onChange={()=>setFollow(!follow)} style={{width:20,height:20}}/>
               <span>
                 עקבתי אחרי&nbsp;
                 <a href="https://www.instagram.com/yosef.sweets_conditory" target="_blank" rel="noopener noreferrer">
                   <img src={instaIcon} alt="Instagram" style={{width:22,height:22,verticalAlign:'middle'}}/>
-                </a>
-                &nbsp;ומגיע לי 5% הנחה 🎉
+                </a>&nbsp;ומגיע לי 5% הנחה 🎉
               </span>
             </label>
           </div>
 
-          <input type="text" placeholder="שם" value={name} onChange={e=>setName(e.target.value)}/>
-          <input type="text" placeholder="טלפון" value={phone} onChange={e=>setPhone(e.target.value)}/>
+          <input type="text" placeholder="שם"        value={name}  onChange={e=>setName(e.target.value)}/>
+          <input type="text" placeholder="טלפון"      value={phone} onChange={e=>setPhone(e.target.value)}/>
           <input type="text" placeholder="מספר שולחן / כתובת" value={table} onChange={e=>setTable(e.target.value)}/>
           <button className="submit-button" onClick={handleSubmit}>שלח הזמנה</button>
         </div>
