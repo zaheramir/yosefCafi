@@ -5,106 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>הזמנות מהלקוחות</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      margin: 0;
-      padding: 20px;
-    }
+    body {font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px;}
+    h1 {text-align: center;}
+    #order-count {text-align: center; font-size: 18px; color: #333; margin-bottom: 20px;}
 
-    h1 {
-      text-align: center;
-    }
+    .order {background-color: white; padding: 20px; margin: 10px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
+    .order ul {list-style-type: none; padding: 0;}
+    .order ul li {padding: 5px 0; display: flex; align-items: center; justify-content: space-between;}
 
-    #order-count {
-      text-align: center;
-      font-size: 18px;
-      color: #333;
-      margin-bottom: 20px;
-    }
+    .cooked {text-decoration: line-through; color: green;}
 
-    .order {
-      background-color: white;
-      padding: 20px;
-      margin: 10px 0;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
+    .delete-button {background-color: #f44336; color: white; border: none; padding: 6px 10px; border-radius: 5px; cursor: pointer;}
+    .delete-button:hover {background-color: #d32f2f;}
 
-    .order ul {
-      list-style-type: none;
-      padding: 0;
-    }
+    .order-header {display: flex; justify-content: space-between; align-items: center; flex-direction: row-reverse;}
 
-    .order ul li {
-      padding: 5px 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
+    .checkbox-label {display: flex; align-items: center; gap: 6px;}
 
-    .cooked {
-      text-decoration: line-through;
-      color: green;
-    }
+    #delete-all-orders {display: block; margin: 20px auto; background-color: #9c27b0; border: none; color: white;
+                        padding: 10px 20px; border-radius: 8px; font-size: 16px; cursor: pointer;}
+    #delete-all-orders:hover {background-color: #7b1fa2;}
 
-    .delete-button {
-      background-color: #f44336;
-      color: white;
-      border: none;
-      padding: 6px 10px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .delete-button:hover {
-      background-color: #d32f2f;
-    }
-
-    .order-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-direction: row-reverse;
-    }
-
-    .checkbox-label {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    #delete-all-orders {
-      display: block;
-      margin: 20px auto;
-      background-color: #9c27b0;
-      border: none;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    #delete-all-orders:hover {
-      background-color: #7b1fa2;
-    }
-
-    #enable-sound {
-      display: block;
-      margin: 10px auto;
-      background-color: #4caf50;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 8px;
-      border: none;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    #enable-sound:hover {
-      background-color: #388e3c;
-    }
+    #enable-sound {display: block; margin: 10px auto; background-color: #4caf50; color: white;
+                   padding: 10px 20px; border-radius: 8px; border: none; font-size: 16px; cursor: pointer;}
+    #enable-sound:hover {background-color: #388e3c;}
   </style>
 </head>
 <body>
@@ -112,166 +36,157 @@
   <h1>הזמנות נוכחיות</h1>
   <button id="enable-sound">הפעל צלילים</button>
   <p id="order-count">סה"כ הזמנות: 0</p>
-  <p id="order-status"></p>
 
-  <button id="delete-all-orders">מחק את כל ההזמנות</button>
-  <div id="orders-container">
-    <p>טוען הזמנות...</p>
-  </div>
+  <button id="delete-all-orders">סמן כל ההזמנות כהושלמו</button>
+  <div id="orders-container"><p>טוען הזמנות...</p></div>
 
   <audio id="beep-sound" src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg" preload="auto"></audio>
 
   <script>
     const ordersContainer = document.getElementById('orders-container');
-    const deleteAllButton = document.getElementById('delete-all-orders');
+    const deleteAllButton   = document.getElementById('delete-all-orders');
     const enableSoundButton = document.getElementById('enable-sound');
-    const beepSound = document.getElementById('beep-sound');
+    const beepSound         = document.getElementById('beep-sound');
     const orderCountDisplay = document.getElementById('order-count');
-    let latestOrders = [];
+
     let soundEnabled = false;
+
+    // ----------  localStorage helpers  ----------
+    const STORAGE_KEY = 'cookedItems';
+
+    function isCooked(orderId, idx) {
+      const map = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      return !!map[`${orderId}-${idx}`];
+    }
+    function setCooked(orderId, idx, val) {
+      const map = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      if (val) map[`${orderId}-${idx}`] = true;
+      else delete map[`${orderId}-${idx}`];
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(map));
+    }
+    // --------------------------------------------
 
     enableSoundButton.addEventListener('click', () => {
       beepSound.play().then(() => {
         soundEnabled = true;
         alert('צלילים הופעלו בהצלחה!');
-      }).catch(() => {
-        alert('הדפדפן חסם את הצליל. אנא נסה ללחוץ שוב.');
-      });
+      }).catch(() => alert('הדפדפן חסם את הצליל. נסה שוב.'));
     });
 
+    // ------------------------------------------------------------------
+    //   fetch orders
+    // ------------------------------------------------------------------
     async function fetchOrders() {
       try {
         const response = await fetch('https://cafe-production.up.railway.app/get-orders');
-        const orders = await response.json();
-        const cleanedOrders = orders.filter(order => order !== null);
+        const orders   = await response.json();
 
-        orderCountDisplay.textContent = `סה"כ הזמנות: ${cleanedOrders.length}`;
+        orderCountDisplay.textContent = `סה"כ הזמנות: ${orders.length}`;
+        ordersContainer.innerHTML = orders.length ? '' : '<p>אין הזמנות כרגע.</p>';
 
-        const previousOrderCount = parseInt(localStorage.getItem('orderCount')) || 0;
+        orders.forEach(order => {
+          const orderDiv = document.createElement('div');
+          orderDiv.className = 'order';
 
-        if (cleanedOrders.length > previousOrderCount && soundEnabled) {
-          beepSound.play();
-        }
+          // header
+          orderDiv.innerHTML = `
+            <div class="order-header">
+              <h2>שולחן ${order.table} - ${order.name} (${order.phone})</h2>
+            </div>
+          `;
 
-        localStorage.setItem('orderCount', cleanedOrders.length);
-        latestOrders = cleanedOrders;
-        ordersContainer.innerHTML = '';
+          // items list
+          const ul = document.createElement('ul');
+          order.items.forEach((item, idx) => {
+            const li = document.createElement('li');
 
-        if (latestOrders.length === 0) {
-          ordersContainer.innerHTML = '<p>אין הזמנות כרגע.</p>';
-        } else {
-          latestOrders.forEach((order, orderIndex) => {
-            const orderDiv = document.createElement('div');
-            orderDiv.className = 'order';
+            const label = document.createElement('label');
+            label.className = 'checkbox-label';
 
-            const orderHeader = document.createElement('div');
-            orderHeader.className = 'order-header';
-            orderHeader.innerHTML = `<h2>שולחן ${order.table} - ${order.name} (${order.phone})</h2>`;
-            orderDiv.appendChild(orderHeader);
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.checked = isCooked(order.id, idx); // ← שחזור מצב
+            label.classList.toggle('cooked', checkbox.checked);
 
-            const orderList = document.createElement('ul');
-            order.items.forEach((item, itemIndex) => {
-              const listItem = document.createElement('li');
-              const itemText = `${item.item} ${item.extras.length > 0 ? `${item.extras.join(', ')}` : 'ללא תוספות'} - ₪${item.price}`;
-
-              const label = document.createElement('label');
-              label.className = 'checkbox-label';
-
-              const checkbox = document.createElement('input');
-              checkbox.type = 'checkbox';
-              checkbox.addEventListener('change', () => {
-                label.classList.toggle('cooked', checkbox.checked);
-              });
-
-              const span = document.createElement('span');
-              span.textContent = itemText;
-
-              label.appendChild(checkbox);
-              label.appendChild(span);
-
-              const deleteButton = document.createElement('button');
-              deleteButton.textContent = 'מחק';
-              deleteButton.className = 'delete-button';
-              deleteButton.addEventListener('click', () => deleteItem(orderIndex, itemIndex));
-
-              listItem.appendChild(label);
-              listItem.appendChild(deleteButton);
-              orderList.appendChild(listItem);
+            checkbox.addEventListener('change', () => {
+              label.classList.toggle('cooked', checkbox.checked);
+              setCooked(order.id, idx, checkbox.checked); // ← שמירת מצב
             });
 
-            orderDiv.appendChild(orderList);
+            const span = document.createElement('span');
+            const extras = item.extras.length ? item.extras.join(', ') : 'ללא תוספות';
+            span.textContent = `${item.item} ${extras} - ₪${item.price}`;
 
-            const totalPrice = document.createElement('p');
-            totalPrice.innerHTML = `<strong>סה"כ:</strong> ₪${order.total}`;
-            orderDiv.appendChild(totalPrice);
+            label.append(checkbox, span);
 
-            const deleteOrderButton = document.createElement('button');
-            deleteOrderButton.textContent = 'מחק הזמנה';
-            deleteOrderButton.className = 'delete-button';
-            deleteOrderButton.addEventListener('click', () => deleteOrder(orderIndex));
-            orderDiv.appendChild(deleteOrderButton);
+            const delBtn = document.createElement('button');
+            delBtn.textContent = 'מחק';
+            delBtn.className   = 'delete-button';
+            delBtn.addEventListener('click', () => deleteItem(order.id, idx));
 
-            ordersContainer.appendChild(orderDiv);
+            li.append(label, delBtn);
+            ul.appendChild(li);
           });
-        }
-      } catch (error) {
-        console.error('שגיאה בטעינת ההזמנות:', error);
+          orderDiv.appendChild(ul);
+
+          // total
+          const totalP = document.createElement('p');
+          totalP.innerHTML = `<strong>סה"כ:</strong> ₪${order.total}`;
+          orderDiv.appendChild(totalP);
+
+          // mark order completed
+          const markBtn = document.createElement('button');
+          markBtn.textContent = 'סמן הזמנה כהושלמה';
+          markBtn.className   = 'delete-button';
+          markBtn.addEventListener('click', () => deleteOrder(order.id));
+          orderDiv.appendChild(markBtn);
+
+          ordersContainer.appendChild(orderDiv);
+        });
+
+      } catch (err) {
+        console.error('שגיאה בטעינת ההזמנות:', err);
         ordersContainer.innerHTML = '<p>טעינת ההזמנות נכשלה.</p>';
       }
     }
 
-    async function deleteOrder(index) {
+    // ------------------------------------------------------------------
+    async function deleteOrder(orderId) {
       try {
-        const response = await fetch(`https://cafe-production.up.railway.app/delete-order/${index}`, {
-          method: 'DELETE',
-        });
-
-        if (response.ok) {
-          alert('ההזמנה נמחקה בהצלחה!');
+        const res = await fetch(`https://cafe-production.up.railway.app/delete-order/${orderId}`, { method: 'DELETE' });
+        if (res.ok) {
+          // מנקים סימונים ל־localStorage להזמנה זו
+          const map = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+          Object.keys(map).forEach(k => { if (k.startsWith(orderId + '-')) delete map[k]; });
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(map));
           fetchOrders();
-        } else {
-          alert('נכשל במחיקת ההזמנה.');
-        }
-      } catch (error) {
-        console.error('שגיאה במחיקת ההזמנה:', error);
-      }
+        } else alert('נכשל בסימון ההזמנה.');
+      } catch (err) { console.error('שגיאה במחיקת הזמנה:', err); }
     }
 
-    async function deleteItem(orderIndex, itemIndex) {
+    // ------------------------------------------------------------------
+    async function deleteItem(orderId, itemIdx) {
       try {
-        const response = await fetch(`https://cafe-production.up.railway.app/delete-item/${orderIndex}/${itemIndex}`, {
-          method: 'POST',
-        });
-
-        if (response.ok) {
-          alert('הפריט נמחק בהצלחה!');
+        const res = await fetch(
+          `https://cafe-production.up.railway.app/delete-item/${orderId}/${itemIdx}`, { method: 'POST' }
+        );
+        if (res.ok) {
+          setCooked(orderId, itemIdx, false); // מנקה סימון מה־storage
           fetchOrders();
-        } else {
-          alert('נכשל במחיקת הפריט.');
-        }
-      } catch (error) {
-        console.error('שגיאה במחיקת פריט:', error);
-      }
+        } else alert('נכשל במחיקת הפריט.');
+      } catch (err) { console.error('שגיאה במחיקת פריט:', err); }
     }
 
+    // ------------------------------------------------------------------
     deleteAllButton.addEventListener('click', async () => {
-      if (confirm("האם אתה בטוח שברצונך למחוק את כל ההזמנות?")) {
-        try {
-          const response = await fetch('https://cafe-production.up.railway.app/delete-all-orders', {
-            method: 'DELETE',
-          });
-
-          if (response.ok) {
-            alert("כל ההזמנות נמחקו בהצלחה.");
-            fetchOrders();
-            localStorage.setItem('orderCount', '0');
-          } else {
-            alert("שגיאה במחיקת כל ההזמנות.");
-          }
-        } catch (error) {
-          console.error("שגיאה כללית:", error);
-        }
-      }
+      if (!confirm("לסמן את כל ההזמנות כהושלמו?")) return;
+      try {
+        const res = await fetch('https://cafe-production.up.railway.app/delete-all-orders', { method: 'DELETE' });
+        if (res.ok) {
+          localStorage.removeItem(STORAGE_KEY); // מנקה סימונים לכולם
+          fetchOrders();
+        } else alert('שגיאה בעדכון כל ההזמנות.');
+      } catch (err) { console.error('שגיאה:', err); }
     });
 
     fetchOrders();

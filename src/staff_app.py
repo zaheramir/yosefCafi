@@ -1,42 +1,37 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-
-app = Flask(__name__)
-CORS(app)  # This will allow requests from any origin for now (can be restricted)
-
-# Store orders in memory (for simplicity, use a database for production)
-orders = []
-
-@app.route('/submit-order', methods=['POST'])
-def submit_order():
-    order = request.json
-    orders.append(order)
-    return jsonify({'message': 'Order received successfully!'}), 200
-
 @app.route('/get-orders', methods=['GET'])
 def get_orders():
-    return jsonify(orders), 200
-
-@app.route('/delete-order/<int:index>', methods=['DELETE'])
-def delete_order(index):
-    if 0 <= index < len(orders):
-        orders.pop(index)
-        return jsonify({'message': 'Order deleted successfully!'}), 200
-    else:
-        return jsonify({'error': 'Order not found!'}), 404
-
-@app.route('/delete-item/<int:order_index>/<int:item_index>', methods=['PATCH'])
-def delete_item(order_index, item_index):
-    if 0 <= order_index < len(orders):
-        items = orders[order_index].get('items', [])
-        if 0 <= item_index < len(items):
-            del items[item_index]
-            # Recalculate total
-            orders[order_index]['total'] = round(sum(item['price'] for item in items), 2)
-            return jsonify({'message': 'Item deleted successfully!'}), 200
-        else:
-            return jsonify({'error': 'Item index out of range!'}), 400
-    return jsonify({'error': 'Order index out of range!'}), 400
-
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5001)
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT id, name, phone, table_number, item, total, status, created_at
+            FROM orders
+            WHERE status != 'completed'
+            ORDER BY id ASC
+        """)
+        rows = cur.fetchall()
+        orders = []
+        for row in rows:
+            try:
+                items = json.loads(row[4]) if isinstance(row[4], str) else row[4]
+            except Exception as parse_error:
+                print(f"❌ JSON decode error for row {row[0]}:", parse_error)
+                items = []
+            orders.append({
+                'id': row[0],
+                'name': row[1],
+                'phone': row[2],
+                'table': row[3],
+                'items': items,
+                'total': float(row[5]),
+                'status': row[6],
+                'created_at': row[7].isoformat() if row[7] else None
+            })
+        cur.close()
+        conn.close()
+        return jsonify(orders), 200
+    except Exception as e:
+        import traceback
+        print("❌ Error in /get-orders:", e)
+        traceback.print_exc()  # <- this shows the full trace
+        return jsonify({'error': 'Failed to retrieve orders'}), 500
