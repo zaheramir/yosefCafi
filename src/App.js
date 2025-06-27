@@ -56,7 +56,7 @@ import cold11        from './cold11.jpg';
 /* ───────────– misc thumbnails –────────── */
 import dessertsThumb from './desserts.jpg';
 import hotThumb      from './hot.jpg';
-import drinksThumb   from './coldDrink.jpg';   // thumbnail for cold drinks
+import drinksThumb   from './cold.jpg';   // thumbnail for cold drinks
 import instaIcon     from './instagram.png';
 
 /* ========================================================= */
