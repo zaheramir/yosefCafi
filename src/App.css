@@ -44,11 +44,12 @@ h1 {
 
 .menu-item img {
   width: 100%;
-  height: auto;
+  height: auto;          /* keep natural aspect-ratio            */
+  max-height: 160px;      /* a little taller than 120 px is fine  */
+  object-fit: contain;    /* show the whole drink, no cropping    */
   border-radius: 8px;
-  max-height: 120px;     /* controls image height */
-  object-fit: cover;
 }
+
 
 .menu-item:hover {
   transform: scale(1.02);
