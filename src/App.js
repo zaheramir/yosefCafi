@@ -52,6 +52,8 @@ import cold8         from './cold8.jpg';
 import cold9         from './cold9.jpg';
 import cold10        from './cold10.jpg';
 import cold11        from './cold11.jpg';
+import cold12        from './cold12.jpg';
+
 
 /* ───────────– misc thumbnails –────────── */
 import dessertsThumb from './desserts.jpg';
@@ -161,7 +163,7 @@ function App() {
     { img:cold10,  name:'סולטאג׳',           price:15, key:'c10',
       desc:'מלבי בתוספת אורז' },
     { img:cold11,  name:'עוגת גבינה אפויה – אישית', price:25, key:'c11' },
-    { img:cold11,  name:'גליליות קרם וניל (2 יח\')', price:10, key:'c12',
+    { img:cold12,  name:'גליליות קרם וניל (2 יח\')', price:10, key:'c12',
       desc:'רול וופל במילוי שמנת מתוקה' },
   ];
 
