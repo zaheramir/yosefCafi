@@ -117,9 +117,9 @@ function App() {
     { img: baklava18, name:'פיסטוק עם קרם וניל', price:5 , key:'b18' },
     { img: baklava19, name:'בקלאווה בהג׳ה', price:18, key:'b19', portion:true,
       desc:'בקלאווה פיסטוק חלבית ושוקולד ברוטב חלב' },
-    { img: baklava20, name:'צלחת משקל בקלאוות – קטן',    price:20, key:'b20', portion:true, desc:'~200 גרם' },
-    { img: baklava20, name:'צלחת משקל בקלאוות – בינוני', price:30, key:'b21', portion:true, desc:'~300 גרם' },
-    { img: baklava20, name:'צלחת משקל בקלאוות – גדול',    price:40, key:'b22', portion:true, desc:'~400 גרם' },
+    { img: baklava20, name:'צלחת משקל בקלאוות – קטן',    price:20, key:'b20', portion:true, desc:'4 יחידות' },
+    { img: baklava20, name:'צלחת משקל בקלאוות – בינוני', price:30, key:'b21', portion:true, desc:'6 יחידות' },
+    { img: baklava20, name:'צלחת משקל בקלאוות – גדול',    price:40, key:'b22', portion:true, desc:'8 יחידות' },
   ];
 
   const knafes = [
