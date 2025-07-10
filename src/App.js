@@ -73,7 +73,7 @@ import cold9    from './cold9.jpg';
 import cold10   from './cold10.jpg';
 import cold11   from './cold11.jpg';
 import cold12   from './cold12.jpg';
-
+import kinder from './kinder.jpg';
 /* ------------ misc ------------ */
 import instaIcon from './instagram.png';
 
@@ -129,8 +129,8 @@ function App() {
     { img:knafe4 , name:'כנאפה נאבלסיה – אישית',  price:20, key:'k4', portion:true },
     { img:knafe5 , name:'כנאפה שאמיה',            price:25, key:'k5', portion:true,
       desc:'בצק קדאיף במילוי גבינה ואגוזים' },
-    { img:knafe6 , name:'כנאפה ענתאביה',          price:25, key:'k6', portion:true,
-      desc:'בצק קדאיף במילוי סחלב ופיסטוק' },
+    { img:knafe6 , name:'כנאפה קנדר',          price:25, key:'k6', portion:true,
+      desc:'שוקולד קנדר במילוי קנאפה' },
     { img:knafe7 , name:'כנאפה קקאו – אישית',     price:20, key:'k7', portion:true },
     { img:knafe8 , name:'כנאפה קרה',              price:35, key:'k8', portion:true,
       desc:'שתי שכבות קדאיף, גלידה טורקית ושוקולד' },
@@ -174,7 +174,9 @@ function App() {
     { img:cold5 , name:'פחזניות (3 יחידות)', price:15, key:'cd5', portion:true },
     { img:cold6 , name:'כנאפה קרה',         price:35, key:'cd6', portion:true,
       desc:'שתי שכבות קדאיף במילוי גלידה טורקית ושוקולד' },
-    { img:cold7 , name:'עוגת טירמיסו',      price:25, key:'cd7', portion:true,
+    { img:kinder , name:'כנאפה קנדר',         price:35, key:'cd6', portion:true,
+      desc:'ביצת קנדר במילוי קנאפה' },
+      { img:cold7 , name:'עוגת טירמיסו',      price:25, key:'cd7', portion:true,
       desc:'קרם חלבי אוורירי ובישקויטים ספוגי-קפה' },
     { img:cold8 , name:'גלידה טורקית וניל', price:20, key:'cd8', portion:true,
       desc:'ריבוע אישי' },
