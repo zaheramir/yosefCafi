@@ -185,7 +185,7 @@ function App() {
       desc:'מלבי בתוספת אורז' },
     { img:cold11, name:'עוגת גבינה אפויה',  price:25, key:'cd11', portion:true },
     { img:cold12, name:'גליליות קרם וניל',  price:10, key:'cd12', portion:true,
-      desc:'2 יחידות רול וופל ממולא שמנת' },
+      desc:'שתי יחידות רול וופל ממולא שמנת' },
   ];
 
   /* ---------- helpers ---------- */
