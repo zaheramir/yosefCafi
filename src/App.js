@@ -127,8 +127,6 @@ function App() {
     { img:knafe2 , name:'כנאפה שטוחה – בצלחת',    price:15, key:'k2', portion:true },
     { img:knafe3 , name:'מברומה',                  price:15, key:'k3', portion:true },
     { img:knafe4 , name:'כנאפה נאבלסיה – אישית',  price:20, key:'k4', portion:true },
-    { img:knafe5 , name:'כנאפה שאמיה',            price:25, key:'k5', portion:true,
-      desc:'בצק קדאיף במילוי גבינה ואגוזים' },
     { img:knafe6 , name:'כנאפה קנדר',          price:25, key:'k6', portion:true,
       desc:'שוקולד קנדר במילוי קנאפה' },
     { img:knafe7 , name:'כנאפה קקאו – אישית',     price:20, key:'k7', portion:true },
@@ -144,7 +142,7 @@ function App() {
   const hotDrinks = [
     { img:hot1 , name:'תה טורקי',        price:6 , key:'h1', portion:true },
     { img:hot2 , name:'תה בטעמים',       price:6 , key:'h2', portion:true },
-    { img:hot3 , name:'קפה הפוך',        price:10, key:'h3', portion:true },
+    { img: hot3, name: 'הפוך קטן', price: 10, key: 'h3', portion: true },
     { img:hot4 , name:'הפוך גדול',       price:15, key:'h4', portion:true },
     { img:hot5 , name:'אספרסו',          price:8 , key:'h5', portion:true },
     { img:hot6 , name:'אספרסו כפול',     price:12, key:'h6', portion:true },
@@ -165,42 +163,57 @@ function App() {
   const coldDishes = [
     { img:cold1 , name:'טרליצ׳י – צלחת', price:12, key:'cd1', portion:true,
       desc:'טעמים: קרמל / פיסטוק / תות', flavours:['קרמל','פיסטוק','תות'] },
-    { img:cold2 , name:'טרליצ׳י – אישית', price:20, key:'cd2', portion:true,
-      desc:'טעמים: קרמל / פיסטוק / תות', flavours:['קרמל','פיסטוק','תות'] },
-    { img:cold3 , name:'ליליות בירות',      price:20, key:'cd3', portion:true,
-      desc:'שכבת סולת בחלב, שמנת מתוקה ופיסטוק + סירופ מי ורדים' },
-    { img:cold4 , name:'עש אלסראיא',        price:25, key:'cd4', portion:true,
-      desc:'3 שכבות קדאיף, סחלב, שמנת מתוקה והאגוזים' },
+    { img:cold2 , name:'טרליצ׳י – אישית קטנה', price:15, key:'cd2a', portion:true,
+    desc:'טעמים: קרמל / פיסטוק / תות', flavours:['קרמל','פיסטוק','תות'] },
+  { img:cold2 , name:'טרליצ׳י – אישית גדולה', price:25, key:'cd2b', portion:true,
+    desc:'טעמים: קרמל / פיסטוק / תות', flavours:['קרמל','פיסטוק','תות'] },
+
+    { img: cold3 , name: 'ליליות בירות – קטן', price: 15, key: 'cd3a', portion: true,
+    desc: 'שכבת סולת בחלב, שמנת מתוקה ופיסטוק + סירופ מי ורדים' },
+  { img: cold3 , name: 'ליליות בירות – גדול', price: 25, key: 'cd3b', portion: true,
+    desc: 'שכבת סולת בחלב, שמנת מתוקה ופיסטוק + סירופ מי ורדים' },
+     { img: cold4 , name: 'עש אלסראיא – קטן', price: 15, key: 'cd4a', portion: true,
+    desc: '3 שכבות קדאיף, סחלב, שמנת מתוקה והאגוזים' },
+  { img: cold4 , name: 'עש אלסראיא – גדול', price: 25, key: 'cd4b', portion: true,
+    desc: '3 שכבות קדאיף, סחלב, שמנת מתוקה והאגוזים' },
     { img:cold5 , name:'פחזניות (3 יחידות)', price:15, key:'cd5', portion:true },
     { img:cold6 , name:'כנאפה קרה',         price:35, key:'cd6', portion:true,
       desc:'שתי שכבות קדאיף במילוי גלידה טורקית ושוקולד' },
     { img:kinder , name:'כנאפה קנדר',         price:35, key:'cd6', portion:true,
       desc:'ביצת קנדר במילוי קנאפה' },
-      { img:cold7 , name:'עוגת טירמיסו',      price:25, key:'cd7', portion:true,
-      desc:'קרם חלבי אוורירי ובישקויטים ספוגי-קפה' },
-    { img:cold8 , name:'גלידה טורקית וניל', price:20, key:'cd8', portion:true,
+    
+    { img: cold7 , name: 'עוגת טירמיסו – קטנה', price: 15, key: 'cd7a', portion: true,
+  desc: 'קרם חלבי אוורירי ובישקויטים ספוגי-קפה' },
+    { img: cold7 , name: 'עוגת טירמיסו – גדולה', price: 25, key: 'cd7b', portion: true,
+      desc: 'קרם חלבי אוורירי ובישקויטים ספוגי-קפה' },
+    { img:cold8 , name:'גלידה טורקית וניל', price:10, key:'cd8', portion:true,
       desc:'ריבוע אישי' },
     { img:cold9 , name:'קרם ברולה',         price:25, key:'cd9', portion:true },
-    { img:cold10, name:'סולטאג׳',           price:15, key:'cd10', portion:true,
-      desc:'מלבי בתוספת אורז' },
+    { img: cold10, name: 'סוטלאג׳', price: 15, key: 'cd10', portion: true,
+      desc: 'מלבי בתוספת אורז' },
     { img:cold11, name:'עוגת גבינה אפויה',  price:25, key:'cd11', portion:true },
     { img:cold12, name:'גליליות קרם וניל',  price:10, key:'cd12', portion:true,
       desc:'שתי יחידות רול וופל ממולא שמנת' },
   ];
 
   /* ---------- helpers ---------- */
-  const addItem = (baseName, price, key) => {
+  const addItem = (baseName, price, key, portion) => {
     const q = parseInt(qty[key] || '1', 10);
+
     if (isNaN(q) || q < 1) { alert('כמות לא תקינה'); return; }
 
     // flavour validation (when flavours exist)
     const flavour = flv[key] || null;
     const itemName = flavour ? `${baseName} — ${flavour}` : baseName;
+        const displayName = portion 
+  ? itemName 
+  : `${itemName} | מספר יחידות: ${q}`;
     if (coldDishes.find(d=>d.key===key && d.flavours) && !flavour) {
       alert('בחר טעם קודם'); return;
     }
 
-    setOrder(prev => [...prev, { item:itemName, extras:[], price:price*q, quantity:q }]);
+    setOrder(prev => [...prev, { item: displayName, extras:[], price: price*q, quantity: q }]);
+
     setCheck(key);
     setTimeout(()=>setCheck(null), 1000);
 
@@ -238,7 +251,7 @@ function App() {
           )}
 
           <div style={{position:'relative'}}>
-            <button className="add-button" onClick={()=>addItem(name,price,key)}>+</button>
+            <button className="add-button" onClick={()=>addItem(name,price,key, portion)}>+</button>
             {check===key && <div className="checkmark-on-button">✓</div>}
           </div>
         </div>
