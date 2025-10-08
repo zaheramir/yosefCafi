@@ -244,4 +244,9 @@ input {
   font-size:.8rem;
   margin-top:2px;
 }
+body.scroll-lock {
+  position: fixed;
+  left: 0; right: 0; width: 100%;
+  overflow: hidden;
+} 
 
